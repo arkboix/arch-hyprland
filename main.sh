@@ -51,6 +51,8 @@ PACKAGES=(
     "zenity"
     "mako"
     "nwg-displays"
+    "nautilus"
+    "starship"
 )
 
 EXTRA_PACKAGES=()
@@ -136,3 +138,4 @@ chsh -s /bin/zsh
 
 figlet "Done!" | lolcat
 echo "You should be good to go now! If you experience any errors, open an issue at: https://github.com/arkboix/dotfiles"
+echo "If you launch into Hyprland and see no wallpaper, set one by pressing Super + C"
