@@ -131,5 +131,8 @@ echo "Reloading configurations..."
 hyprctl reload || echo "Hyprland reload failed (not running?)"
 pkill -SIGUSR2 waybar || echo "Waybar reload failed (not running?)"
 
+# Set ZSHELL
+chsh -s /bin/zsh
+
 figlet "Done!" | lolcat
 echo "You should be good to go now! If you experience any errors, open an issue at: https://github.com/arkboix/dotfiles"
