@@ -51,6 +51,7 @@ PACKAGES=(
     "hyprland"
     "hyprlock"
     "hypridle"
+    "python-pywal"
     "hyprcursor"
     "wlogout"
     "nwg-wrapper"
@@ -106,6 +107,8 @@ FILES=(
     "$HOME/.config/starship.toml"
     "$HOME/.zshrc"
     "$HOME/.zshrc-personal"
+    "$HOME/.config/wal"
+    "$HOME/.config/nwg-dock-hyprland"
 )
 
 # Check for script packages
@@ -177,7 +180,7 @@ figlet "Backup and Install" | lolcat
 cd "$HOME/dotfiles" || { echo "Failed to change to dotfiles directory"; exit 1; }
 
 echo "Applying dotfiles using Stow..."
-for DIR in hypr waybar kitty mako wlogout nwg-wrapper doom arkscripts starship rofi wallpapers zsh; do
+for DIR in hypr wal dunst nwg-dock-hyprland waybar kitty mako wlogout nwg-wrapper doom arkscripts starship rofi wallpapers zsh; do
     if [ -d "$DIR" ] || [ -f "$DIR" ]; then
         stow -v -t ~ "$DIR" || echo "Warning: Stow failed for $DIR"
     else
@@ -206,6 +209,18 @@ if [ "$SHELL" != "/bin/zsh" ]; then
     chsh -s /bin/zsh
     echo "If shell change failed, run this command manually after installation: chsh -s /bin/zsh"
 fi
+
+swww-daemon &
+swww img ~/wallpapers/default.jpg &
+wal -i ~/wallpapers/default.jpg
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/theme-2/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/theme-3/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/theme-4/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/theme-5/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/waybar/theme-6/pywal.css
+ln -s ~/.cache/wal/colors-waybar.css ~/.config/wlogout/pywal.css
+
 
 figlet "Done!" | lolcat
 echo "Installation completed successfully!"
