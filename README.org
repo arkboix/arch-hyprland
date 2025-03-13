@@ -8,7 +8,7 @@ The main repository with all dotfiles: https://github.com/arkboix/dotfiles
 
 * IMPORTANT NOTES
 
-> **Warning:** Please do NOT use only one specific configuration from the dotfiles, each configuration is like an ecosystem, everything depends on one another.
+*Warning:* Please do NOT use only one specific configuration from the dotfiles, each configuration is like an ecosystem, everything depends on one another.
 
 * WHAT THIS SCRIPT DOES?
 
