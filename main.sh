@@ -88,34 +88,34 @@ install_packages() {
         "hypridle"
         "python-pywal"
         "hyprcursor"
-        "wlogout"
-        "nwg-wrapper"
         "waybar"
         "rofi-wayland"
         "kitty"
         "swww"
-        "waypaper"
         "yad"
         "ttf-font-awesome"
         "ttf-jetbrains-mono"
         "ttf-jetbrains-mono-nerd"
         "ttf-fira-sans"
         "ttf-ibm-plex"
-        "light"
         "brightnessctl"
         "zenity"
         "thunar"
         "mako"
-        "nwg-displays"
         "starship"
         "ttf-ibmplex-mono-nerd"
-        "hyprshot"
         "pipewire-pulse"
     )
 
     AUR_PACKAGES=(
         "pokeget"
         "hyprgui"
+        "nwg-wrapper"
+        "hyprshot"
+        "wlogout"
+        "nwg-displays"
+        "light"
+        "waypaper"
         "wallust"
     )
 
@@ -127,7 +127,7 @@ install_packages() {
     sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
     log_success "Installed Official Repo Packages"
 
-    log_info "Installing (3) AUR Packages"
+    log_info "Installing (9) AUR Packages"
 
     if command -v yay &>/dev/null; then
         log_info "YAY AUR Helper is installed."
@@ -277,13 +277,18 @@ stow_dots() {
 # Check if wallpapers were cloned
 
     if [ -d "$HOME/wallpapers" ]; then
-        log_info "Moving wallpapers into existing wallpapers DIR"
-        mv "$HOME/dotfiles/wallpapers/"* "$HOME/wallpapers/"
-        log_success "Wallpapers moved successfully"
+        log_info "Move exisitng wallpapers into dotfiles"
+
+        mv "$HOME/wallpapers/"* "$HOME/dotfiles/wallpapers/wallpapers"
+        rm -rf "$HOME/wallpapers"
+
+        stow -v -t ~ wallpapers
+        log_success "Wallpapers Moved and stowed"
     else
         stow -v -t ~ wallpapers
-        log_success "Wallpapers Stowed"
+        log_success "Wallpapers stowed"
     fi
+
 
     for dir in "${FILES_STOW[@]}"; do
         if [ -d "$dir" ]; then
