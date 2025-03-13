@@ -129,7 +129,7 @@ install_packages() {
 
     log_info "Installing (9) AUR Packages"
 
-    if command -v yay &>/dev/null; then
+    if yay --version &>/dev/null; then
         log_info "YAY AUR Helper is installed."
         yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
 
@@ -282,13 +282,15 @@ stow_dots() {
         mv "$HOME/wallpapers/"* "$HOME/dotfiles/wallpapers/wallpapers"
         rm -rf "$HOME/wallpapers"
 
-        stow -v -t ~ wallpapers
-        log_success "Wallpapers Moved and stowed"
+        log_success "Wallpapers Moved"
+        log_info "Stowing wallpapers"
     else
-        stow -v -t ~ wallpapers
-        log_success "Wallpapers stowed"
+        log_info "Stowing wallpapers"
     fi
 
+
+        stow -v -t ~ wallpapers
+        log_success "Stowing wallpapers done"
 
     for dir in "${FILES_STOW[@]}"; do
         if [ -d "$dir" ]; then
@@ -313,11 +315,22 @@ stow_dots
 post_install() {
 
     log_info "Settings SWWW"
-    swww-daemon &
+    if ! pgrep -x "swww-daemon" &>/dev/null; then
+        swww-daemon &
+        log_success "Started swww-daemon"
+    else
+        log_info "swww-daemon is already running"
+    fi
+
+
+    log_info "setting wallpaper"
     swww img ~/wallpapers/polarlights3.jpg
+    log_success "Apply wallpaper done"
     bash ~/arkscripts/wal.sh
 
 }
+
+post_install
 
 #########
 ## END ##
@@ -330,11 +343,11 @@ end() {
     log_info "Do you want to reboot? (y/n) HIGHLY RECOMMEND"
     read -r REBOOT_CONFIRM
 
-    if [[ "$REBOOT_CONFIRM" =~ ^(Yy)$ ]]; then
+    if [[ "$REBOOT_CONFIRM" =~ ^[Yy]$ ]]; then
         reboot
     else
         log_info "Thanks!"
-        exit 1
+        exit 0
     fi
 }
 
