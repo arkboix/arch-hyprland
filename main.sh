@@ -81,6 +81,7 @@ install_packages() {
         "stow"
         "curl"
         "zsh"
+        "nwg-menu"
         "bash"
         "emacs"
         "hyprland"
