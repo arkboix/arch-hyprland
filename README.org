@@ -1,0 +1,77 @@
+#+title: Readme
+
+* ARKBOI'S DOTFILES - GUIDED INSTALLER FOR ARCH GNU/LINUX OR ARCH BASED DISTROS
+
+This is the guided and easy installation script that will install Arkboi's dotfiles which contains a beautiful hyprland setup, that can either be used as is or as a foundation for your own projects.
+
+The main repository with all dotfiles: https://github.com/arkboix/dotfiles
+
+* IMPORTANT NOTES
+
+> **Warning:** Please do NOT use only one specific configuration from the dotfiles, each configuration is like an ecosystem, everything depends on one another.
+
+* WHAT THIS SCRIPT DOES?
+
+This Installation script is interactive, you can choose to add extra packages if you want to alongside the *30 Required Arch Packages and 2 Required AUR packages*. You also get the options to install additonal wallpapers (Very huge size, 300+ wallpapers.) By default the Dotfiles repository is about 1.6 Gigabytes in size.
+
+The Script will install the configurations for the following:
+** Hypr
+** Waybar
+** Kitty
+** Mako
+** Wallust
+** Wal
+** Bash
+** ZSH
+** NWG Wrapper
+** NWG Dock Hyprland
+** Wlogout
+** Rofi
+** Wofi
+** Starship
+
+The Script will backup the existing configurations for these before installing the new ones.
+
+* PROGRAMS FREQUENTLY PEOPLE ARE CONFUSE ABOUT:
+
+* WALLUST
+
+Wallust is a tool to generate colourschemes based on your images, it is integrated with the dotfiles to generate a new colorscheme based on the set wallpaper.
+
+* WAL
+
+ Wal is a python tool to do the same as wallust, wallust in this dotfiles is using the wal backend to create the colors.
+
+* ROFI
+
+Rofi is an application launcher. It is also used in various scripts
+
+* NWG Wrapper
+
+NWG Wrapper is a program to display overlays on the desktop. the dotfiles will overlay a cheatsheet with nwg-wrapper.
+
+* WLOGOUT
+
+It is a logout menu
+
+* NWG Dock
+
+It is a dock for hyprland, it is turned off by default
+
+* STARSHIP
+
+Starship is a custom shell prompt
+
+* MAKO
+
+it is a notification Daemon
+
+
+
+
+
+* ABOUT DISTRUBUTIONS
+
+All arch linux based distrobutions are supported. The script has been tested on real hardware in **Cachy OS** and in Virtual Hardware with **Arco Linux**.
+
+The script is written in Arco Linux
