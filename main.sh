@@ -253,6 +253,8 @@ clone
 
 stow_dots() {
 
+    figlet "Stow Files" | lolcat
+
     log_info "Stowing the dotfiles"
     cd "$HOME/dotfiles" || { log_error "Failed to enter dotfiles"; exit 1; }
 
@@ -313,6 +315,8 @@ stow_dots
 
 
 post_install() {
+
+    figlet "Post Install" | lolcat
 
     log_info "Settings SWWW"
     if ! pgrep -x "swww-daemon" &>/dev/null; then
