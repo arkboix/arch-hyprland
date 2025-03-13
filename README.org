@@ -1,6 +1,6 @@
 #+TITLE: Arkboi's Arch + Hyprland Dotfiles Installation Script
 #+AUTHOR: Arkboi
-#+DESCRIPTION: A script to install and configure Arkboi's Hyprland dotfiles on Arch Linux.
+#+SUBTITLE: A script to install and configure Arkboi's Hyprland dotfiles on Arch Linux.
 #+STARTUP: overview
 
 * Introduction
