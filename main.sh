@@ -234,13 +234,13 @@ clone() {
 
     if [[ "$WALLS_CONFIRM" =~ ^[Yy]$ ]]; then
         log_info "Cloning wallpapers repo, hope your computer doesn't run out of space!"
-         git clone https://github.com/arkboix/wallpapers.git "$HOME/wallpapers"
+         git clone --depth 1 https://github.com/arkboix/wallpapers.git "$HOME/wallpapers"
          log_success "Wallpapers installed"
     fi
 
 
     log_info "Cloning main Dotfiles Repo"
-    git clone https://github.com/arkboix/dotfiles.git "$HOME/dotfiles"
+    git clone --depth 1 https://github.com/arkboix/dotfiles.git "$HOME/dotfiles"
     log_success "Dotfiles installed."
 }
 
