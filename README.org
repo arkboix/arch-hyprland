@@ -48,7 +48,7 @@ A customizable and feature-rich shell prompt.
 ** Mako
 A lightweight notification daemon for Wayland.
 
-Supported Distributions
+* Supported Distributions
 
 All Arch Linux-based distributions are supported. The script has been tested on:
 
@@ -57,20 +57,23 @@ Virtual hardware: Arco Linux
 
 The script was originally written in Arco Linux.
 
-Installation Process
+* Installation Process
 
 #+BEGIN_SRC
-Coming soon
+git clone https://github.com/arkboix/arch-hyprland.git
+cd arch-hyprland
+chmod +x main.sh
+./main.sh
 #+END_SRC
 
-Screenshots
+* Screenshots
 
 [[file:screenshots/placeholder.png][View Screenshot]]
 
-Customization
+* Customization
 
 Detailed customization guides are available in the dotfiles repository.
 
-Troubleshooting
+* Troubleshooting
 
 For common issues and solutions, please check the GitHub repository issues section.
