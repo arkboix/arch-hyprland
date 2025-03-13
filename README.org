@@ -1,79 +1,73 @@
-#+TITLE: ARKBOI'S DOTFILES
-#+SUBTITLE: Guided Installer for Arch GNU/Linux or Arch-based Distros
+#+TITLE: Arkboi's Arch + Hyprland Dotfiles Installation Script
 #+AUTHOR: Arkboi
-#+DATE: 2025-03-13
-#+OPTIONS: toc:3 num:3
+#+DESCRIPTION: A script to install and configure Arkboi's Hyprland dotfiles on Arch Linux.
 #+STARTUP: overview
 
-Overview
+* Introduction
+This script automates the installation and setup of Arkboi's Hyprland dotfiles on Arch Linux.
+It installs essential packages, backs up existing configurations, cleans up old dotfiles,
+clones the latest dotfiles repository, and applies the necessary settings.
 
-A guided and elegant installation script that deploys Arkboi's dotfiles, featuring a beautiful Hyprland setup that can be used as-is or as a foundation for your own projects.
-Main repository: [[https://github.com/arkboix/dotfiles][github.com/arkboix/dotfiles]]
+* Features
+- Installs essential Arch Linux and AUR packages.
+- Backs up existing dotfiles before replacing them.
+- Clones the latest dotfiles from the GitHub repository.
+- Uses GNU Stow to manage dotfiles symlinks.
+- Applies wallpaper and color schemes.
+- Provides an optional reboot prompt after installation.
 
-⚠ Important Notes
+* Prerequisites
+- A fresh Arch Linux installation with internet access.
+- `sudo` privileges.
+- Git installed (`sudo pacman -S git` if not installed).
 
-#+BEGIN_QUOTE
-Please do NOT use only one specific configuration from the dotfiles. Each configuration is like an ecosystem - everything depends on one another.
-#+END_QUOTE
+* Installation
+1. Clone the script repository:
+   #+BEGIN_SRC bash
+   git clone https://github.com/arkboix/arch-hyprland.git ~/arch-hyprland
+   cd ~/arch-hyprland
+   #+END_SRC
 
-What This Script Does
+2. Make the script executable:
+   #+BEGIN_SRC bash
+   chmod +x install.sh
+   #+END_SRC
 
-This installation script is interactive. You can choose to add extra packages alongside the 30 Required Arch Packages and 2 Required AUR packages. You also get options to install additional wallpapers (very large collection, 300+ wallpapers). By default, the Dotfiles repository is approximately 1.6 Gigabytes in size.
-** Configurations Installed
-The script will install configurations for the following:
-| Window Manager | Tools         | Shells | Launchers | Other           |
-|----------------+---------------+--------+-----------+-----------------|
-| Hypr           | Waybar        | Bash   | Rofi      | Mako            |
-| NWG Dock       | Kitty         | ZSH    | Wofi      | Wallust         |
-|                | NWG Wrapper   |        |           | Wal             |
-|                | Wlogout       |        |           | Starship        |
-The script will backup your existing configurations before installing the new ones.
+3. Run the script:
+   #+BEGIN_SRC bash
+   ./install.sh
+   #+END_SRC
 
-Program Descriptions
-
-** Wallust
-A tool to generate colorschemes based on your images. It is integrated with these dotfiles to generate a new colorscheme based on the set wallpaper.
-** Wal
-A Python tool similar to Wallust. In this setup, Wallust uses the Wal backend to create colors.
-** Rofi
-An application launcher also used in various scripts throughout the configuration.
-** NWG Wrapper
-A program to display overlays on the desktop. The dotfiles will overlay a cheatsheet with nwg-wrapper.
-** Wlogout
-A beautiful logout menu for Wayland compositors.
-** NWG Dock
-A dock for Hyprland (turned off by default).
-** Starship
-A customizable and feature-rich shell prompt.
-** Mako
-A lightweight notification daemon for Wayland.
-
-* Supported Distributions
-
-All Arch Linux-based distributions are supported. The script has been tested on:
-
-Real hardware: Cachy OS
-Virtual hardware: Arco Linux
-
-The script was originally written in Arco Linux.
-
-* Installation Process
-
-#+BEGIN_SRC
-git clone https://github.com/arkboix/arch-hyprland.git
-cd arch-hyprland
-chmod +x main.sh
-./main.sh
-#+END_SRC
-
-* Screenshots
-
-[[file:screenshots/placeholder.png][View Screenshot]]
+* What the Script Does
+- **Asks for sudo password** to avoid repeated prompts.
+- **Installs dependencies** (both from the official repo and AUR).
+- **Backs up existing configurations** before making any changes.
+- **Cleans up old dotfiles** to avoid conflicts.
+- **Clones the latest dotfiles** from the repository.
+- **Uses GNU Stow** to create symbolic links for dotfiles.
+- **Sets up wallpaper and color schemes** using `swww` and `wal.sh`.
+- **Provides a reboot option** for finalizing the setup.
 
 * Customization
-
-Detailed customization guides are available in the dotfiles repository.
+- Modify the `PACKAGES` and `AUR_PACKAGES` arrays in the script to adjust installed software.
+- Change the `FILES` array in the backup section to include additional directories.
+- Edit the wallpaper path in the `post_install` section if needed.
 
 * Troubleshooting
+- If the script fails due to missing dependencies, manually install them using:
+  #+BEGIN_SRC bash
+  sudo pacman -S --needed stow git curl
+  #+END_SRC
+- If an AUR package fails, try installing it manually using `yay` or `paru`.
+- If `swww` doesn't set the wallpaper, ensure the `swww-daemon` is running.
 
-For common issues and solutions, please check the GitHub repository issues section.
+* License
+This script is licensed under the MIT License. See the LICENSE file for details.
+
+* Credits
+- Developed by Arkboi
+- Inspired by various Arch Linux dotfiles management scripts.
+
+* Support
+For issues, open a ticket on the GitHub repository:
+[[https://github.com/arkboix/arch-hyprland/issues][GitHub Issues]]
