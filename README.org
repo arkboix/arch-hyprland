@@ -36,35 +36,35 @@ The Script will backup the existing configurations for these before installing t
 
 * WALLUST
 
-Wallust is a tool to generate colourschemes based on your images, it is integrated with the dotfiles to generate a new colorscheme based on the set wallpaper.
+- Wallust is a tool to generate colourschemes based on your images, it is integrated with the dotfiles to generate a new colorscheme based on the set wallpaper.
 
 * WAL
 
- Wal is a python tool to do the same as wallust, wallust in this dotfiles is using the wal backend to create the colors.
+ - Wal is a python tool to do the same as wallust, wallust in this dotfiles is using the wal backend to create the colors.
 
 * ROFI
 
-Rofi is an application launcher. It is also used in various scripts
+- Rofi is an application launcher. It is also used in various scripts
 
 * NWG Wrapper
 
-NWG Wrapper is a program to display overlays on the desktop. the dotfiles will overlay a cheatsheet with nwg-wrapper.
+- NWG Wrapper is a program to display overlays on the desktop. the dotfiles will overlay a cheatsheet with nwg-wrapper.
 
 * WLOGOUT
 
-It is a logout menu
+- It is a logout menu
 
 * NWG Dock
 
-It is a dock for hyprland, it is turned off by default
+- It is a dock for hyprland, it is turned off by default
 
 * STARSHIP
 
-Starship is a custom shell prompt
+- Starship is a custom shell prompt
 
 * MAKO
 
-it is a notification Daemon
+- it is a notification Daemon
 
 
 
