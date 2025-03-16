@@ -229,6 +229,7 @@ backup() {
         "$HOME/.config/kitty"
         "$HOME/.bashrc"
         "$HOME/.doom.d"
+        "$HOME/wallpapers"
         "$HOME/.config/wallust"
         "$HOME/.config/wal"
         "$HOME/.config/mako"
@@ -334,6 +335,7 @@ stow_dots() {
         "arkscripts"
         "bash"
         "emacs"
+        "wallpapers"
         "hypr"
         "kitty"
         "mako"
@@ -348,47 +350,6 @@ stow_dots() {
         "wofi"
     )
 
-    ##########
-    ## MOVE WALLPAPERS ##
-    ##########
-
-    if [ -d "$HOME/wallpapers" ]; then
-        log_info "Moving existing wallpapers into dotfiles"
-
-        mkdir -p "$HOME/dotfiles/wallpapers/wallpapers"
-
-        # Avoid issues if ~/wallpapers is empty
-        shopt -s nullglob
-
-        for file in "$HOME/wallpapers/"*; do
-            filename=$(basename "$file")
-            dest="$HOME/dotfiles/wallpapers/wallpapers/$filename"
-
-            # Rename duplicates
-            if [[ -e "$dest" ]]; then
-                count=1
-                while [[ -e "$HOME/dotfiles/wallpapers/wallpapers/${filename%.*}-$count.${filename##*.}" ]]; do
-                    ((count++))
-                done
-                dest="$HOME/dotfiles/wallpapers/wallpapers/${filename%.*}-$count.${filename##*.}"
-            fi
-
-            mv "$file" "$dest"
-        done
-
-        # Remove source wallpapers directory
-        rm -rf "$HOME/wallpapers"
-
-        log_success "Wallpapers moved"
-    else
-        log_info "No wallpapers to move"
-    fi
-
-    #####################
-    ## STOW WALLPAPERS ##
-    #####################
-    log_info "Stowing wallpapers"
-    stow -v -t ~ wallpapers && log_success "Stowing wallpapers done"
 
     ###################
     ## STOW DOTFILES ##
