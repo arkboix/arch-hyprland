@@ -173,7 +173,16 @@ install_packages() {
     log_success "Installed Official Repo Packages"
 
     log_info "Installing (6) AUR Packages"
-    $AUR_HELPER -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+for pkg in "${AUR_PACKAGES[@]}"; do
+    if $AUR_HELPER -Ss "^$pkg\$" | grep -q "$pkg"; then
+        log_info "Installing $pkg"
+        $AUR_HELPER -S --needed --noconfirm "$pkg"
+        log_success "Installed $pkg"
+    else
+        log_error "AUR package $pkg not found, skipping."
+    fi
+done
+
 
 }
 
