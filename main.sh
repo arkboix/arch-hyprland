@@ -52,6 +52,35 @@ clear # Clear the text
 ######################
 
 
+aur_helper_choose() {
+    log_info "Which AUR helper do you want to use? If it is not installed then the script will install it. (yay/paru)?"
+    read -r AUR_HELPER
+
+    AUR_HELPER=${AUR_HELPER:-yay} # Default YAY
+    export AUR_HELPER
+
+
+    if command -v "$AUR_HELPER" &>/dev/null; then
+       log_info "$AUR_HELPER is already installed, WOAO"
+    else
+        log_info "installing $AUR_HELPER"
+        sudo pacman -S --needed --noconfirm git base-devel || { log_error "Failed to install base-devel"; exit 1; }
+        git clone "https://aur.archlinux.org/$AUR_HELPER.git" "$HOME/$AUR_HELPER" && cd "$HOME/$AUR_HELPER"
+        makepkg -si --noconfirm
+        cd "$HOME" && rm -rf "$HOME/$AUR_HELPER"
+
+
+        if ! command -v "$AUR_HELPER" &>/dev/null; then
+            log_error "$AUR_HELPER installation failed. Exiting."
+            exit 1
+        fi
+
+        log_success "$AUR_HELPER installed successfully."
+    fi
+}
+
+aur_helper_choose
+
 install_script_depends() {
   VISUAL_PACKAGES=(
         "figlet"
@@ -67,12 +96,29 @@ install_script_depends
 # Starting Message
 figlet "Arkboi's DOTS" | lolcat
 log_info "Arch Linux install script for Arkboi's Hyprland dotfiles."
+log_info "Please Wait"
+sleep 2
+
+figlet "Install Packages" | lolcat
 
 
+install_user_extra() {
+    log_info "Any extra packages to install!? Press enter if no, seperate with a space."
+    read -r USER_EXTRA_PACKAGES
+
+    if [[ -n "$USER_EXTRA_PACKAGES" ]]; then
+        log_info "Installing user packages"
+        sudo pacman -S --needed --noconfirm "$USER_EXTRA_PACKAGES"
+        log_success "Install USER_EXTRA_PACKAGES"
+    else
+        log_info "No user extras, skipping"
+    fi
+
+}
+
+install_user_extra
 
 install_packages() {
-
-    figlet "Install Packages" | lolcat
 
 
     # Define Packages
@@ -100,6 +146,7 @@ install_packages() {
         "ttf-fira-sans"
         "ttf-ibm-plex"
         "brightnessctl"
+        "nwg-displays"
         "zenity"
         "thunar"
         "mako"
@@ -110,41 +157,53 @@ install_packages() {
 
     AUR_PACKAGES=(
         "pokeget"
-        "hyprgui"
         "nwg-wrapper"
-        "hyprshot"
         "wlogout"
-        "nwg-displays"
         "light"
         "waypaper"
         "wallust"
     )
 
-    # Define User-Specific Extra packages
-    EXTRA_PACKAGES=()
 
+    # remove dupes
+    rm_dupes
 
     log_info "Installing Official Repo Packages.."
     sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
     log_success "Installed Official Repo Packages"
 
-    log_info "Installing (9) AUR Packages"
-
-    if yay --version &>/dev/null; then
-        log_info "YAY AUR Helper is installed."
-        yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
-
-    elif sudo pacman -S --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay.git && pushd yay && makepkg -si && popd; then
-        log_success "Yay Installed successfully"
-        yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
-    else
-        log_error "Yay failed to install, please try manually installing yay, Exiting."
-        exit 1
-    fi
+    log_info "Installing (6) AUR Packages"
+    $AUR_HELPER -S --needed --noconfirm "${AUR_PACKAGES[@]}"
 
 }
 
+rm_dupes() {
+    declare -A package_map
+
+    # Add Official
+    for pkg in "${PACKAGES[@]}"; do
+        package_map["$pkg"]=1
+    done
+
+    # Fileter Aur
+
+    local cleaned_aur_packages=()
+    for pkg in "${AUR_PACKAGES[@]}"; do
+               if [[ -z "${package_map[$pkg]}" ]]; then
+                   cleaned_aur_packages+=("$pkg")
+               else
+                   log_warning "Skipping duplicate package: $pkg (exists in both PACKAGES and AUR_PACKAGES)"
+
+               fi
+    done
+
+   AUR_PACKAGES=("${cleaned_aur_packages[@]}")
+}
+
+
 install_packages # Install the packages
+
+
 
 ############
 ## BACKUP ##
@@ -253,11 +312,14 @@ clone
 ##########
 
 stow_dots() {
-
     figlet "Stow Files" | lolcat
 
     log_info "Stowing the dotfiles"
-    cd "$HOME/dotfiles" || { log_error "Failed to enter dotfiles"; exit 1; }
+
+    if ! cd "$HOME/dotfiles"; then
+        log_error "Failed to enter dotfiles directory"
+        exit 1
+    fi
 
     FILES_STOW=(
         "arkscripts"
@@ -277,36 +339,62 @@ stow_dots() {
         "wofi"
     )
 
-# Check if wallpapers were cloned
+    ##########
+    ## MOVE WALLPAPERS ##
+    ##########
 
     if [ -d "$HOME/wallpapers" ]; then
-        log_info "Move exisitng wallpapers into dotfiles"
+        log_info "Moving existing wallpapers into dotfiles"
 
-        mv "$HOME/wallpapers/"* "$HOME/dotfiles/wallpapers/wallpapers"
+        mkdir -p "$HOME/dotfiles/wallpapers/wallpapers"
+
+        # Avoid issues if ~/wallpapers is empty
+        shopt -s nullglob
+
+        for file in "$HOME/wallpapers/"*; do
+            filename=$(basename "$file")
+            dest="$HOME/dotfiles/wallpapers/wallpapers/$filename"
+
+            # Rename duplicates
+            if [[ -e "$dest" ]]; then
+                count=1
+                while [[ -e "$HOME/dotfiles/wallpapers/wallpapers/${filename%.*}-$count.${filename##*.}" ]]; do
+                    ((count++))
+                done
+                dest="$HOME/dotfiles/wallpapers/wallpapers/${filename%.*}-$count.${filename##*.}"
+            fi
+
+            mv "$file" "$dest"
+        done
+
+        # Remove source wallpapers directory
         rm -rf "$HOME/wallpapers"
 
-        log_success "Wallpapers Moved"
-        log_info "Stowing wallpapers"
+        log_success "Wallpapers moved"
     else
-        log_info "Stowing wallpapers"
+        log_info "No wallpapers to move"
     fi
 
+    #####################
+    ## STOW WALLPAPERS ##
+    #####################
+    log_info "Stowing wallpapers"
+    stow -v -t ~ wallpapers && log_success "Stowing wallpapers done"
 
-        stow -v -t ~ wallpapers
-        log_success "Stowing wallpapers done"
-
+    ###################
+    ## STOW DOTFILES ##
+    ###################
     for dir in "${FILES_STOW[@]}"; do
         if [ -d "$dir" ]; then
-            stow -v -t ~ "$dir"
-            log_success "Stowed $dir"
+            stow -v -t ~ "$dir" && log_success "Stowed $dir"
         else
-            log_warning "Skipped $dir does not exist"
+            log_warning "Skipped $dir - does not exist"
         fi
     done
 
-    log_success "All dotfiles stow successfully"
-
+    log_success "All dotfiles stowed successfully"
 }
+
 
 stow_dots
 
@@ -321,7 +409,8 @@ post_install() {
 
     log_info "Settings SWWW"
     if ! pgrep -x "swww-daemon" &>/dev/null; then
-        swww-daemon &
+        swww-daemon & disown
+        sleep 1
         log_success "Started swww-daemon"
     else
         log_info "swww-daemon is already running"
@@ -329,7 +418,7 @@ post_install() {
 
 
     log_info "setting wallpaper"
-    swww img ~/wallpapers/polarlights3.jpg
+    swww img ~/wallpapers/Fantasy-Lake1.png
     log_success "Apply wallpaper done"
     bash ~/arkscripts/wal.sh
 
