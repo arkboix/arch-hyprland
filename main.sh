@@ -387,7 +387,7 @@ post_install() {
 
 
     log_info "setting wallpaper"
-    swww img ~/wallpapers/Fantasy-Lake1.png
+    swww img ~/wallpapers/moon-sky.png
     log_success "Apply wallpaper done"
     bash ~/arkscripts/wal.sh
 
