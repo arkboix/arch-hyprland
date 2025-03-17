@@ -1,9 +1,7 @@
-#!/usr/bin/env sh
+#!/bin/bash
 # Arkboi's Dotfiles Update Script
-# Original: https://github.com/arkboix/dotfiles
-# https://github.com/arkboix/arch-hyprland
 
-set -e # to exit script in case of errors.
+set -e # Exit on error
 
 ############
 ## COLORS ##
@@ -37,106 +35,105 @@ log_success() {
 ## START ##
 ###########
 
-log_info "Starting Update script... Please enter SUDO password"
+aur_helper() {
+    log_info "Which AUR helper to use? You need to have it installed. (yay/paru)?"
+    read -r AUR_HELPER
 
-sudo -v # ask for password so no need to enter it again.
-
-log_success "Sudo password correct"
-
-clear
-
-########################
-## UPDATE PACMAN REPO ##
-########################
-
-update_repo() {
-    log_info "Updating Arch Linux repository"
-    sudo pacman --needed --noconfirm -Syu
-    log_success "Update Arch Linux Repository"
+    if [[ "$AUR_HELPER" =~ ^(yay|paru)$ ]]; then
+        export AUR_HELPER="$AUR_HELPER"
+    else
+        log_warning "Invalid input, using yay"
+        export AUR_HELPER="yay"
+    fi
 }
 
-update_repo
+############
+## BACKUP ##
+############
+backup() {
+    BACKUP_DIR="$HOME/dotfiles_backup_$(date +%Y-%m-%d_%H-%M-%S)"
 
-################
-## UPDATE AUR ##
-################
+    log_info "Backing up ~/dotfiles to $BACKUP_DIR"
+
+    cp -r "$HOME/dotfiles" "$BACKUP_DIR"
+
+    log_success "Backup Complete"
+}
+
+############
+## UPDATE ##
+############
+update_repo() {
+    log_info "Do you want to update Arch Linux? (y/n)"
+    read -r UPDATE_CONFIRM
+
+    if [[ "$UPDATE_CONFIRM" == "y" || "$UPDATE_CONFIRM" == "Y" ]]; then
+        log_info "Updating Arch Linux..."
+        sudo pacman --noconfirm -Syu
+        log_success "Updated Arch Linux"
+    else
+        log_info "Not updating Arch Linux"
+    fi
+}
 
 update_aur() {
-    log_info "Updating AUR packages"
+    log_info "Do you want to update Arch Linux AUR? (y/n)"
+    read -r AUR_UPDATE_CONFIRM
 
-    if yay --version &>/dev/null; then
-        log_info "Yay is installed"
-        yay --needed --noconfirm -Syu
+    if [[ "$AUR_UPDATE_CONFIRM" == "y" || "$AUR_UPDATE_CONFIRM" == "Y" ]]; then
+        log_info "Updating Arch Linux AUR..."
+        "$AUR_HELPER" --noconfirm -Syu
+        log_success "Updated Arch Linux AUR"
     else
-        log_error "Yay is NOT installed. Please install yay by running:"
-        log_warning "sudo pacman -S yay"
-        exit 1
+        log_info "Not updating Arch Linux AUR"
     fi
-    log_success "AUR updated"
 }
 
-update_aur
-
-#####################
-## UPDATE DOTFILES ##
-#####################
-
+#################
+## UPDATE DOTS ##
+#################
 update_dots() {
-    log_info "Updating Dotfiles.."
-    cd "$HOME/dotfiles" || { log_error "Failed to enter dotfiles directory"; exit 1; }
-    git pull --rebase origin main
-    log_success "Update Dotfiles"
+    log_info "Resetting dotfiles repo"
+    cd "$HOME/dotfiles"
+    git reset --hard origin/main
+    git pull --force
+    log_success "Dotfiles Updated"
+}
 
-    log_info "Stowing Changes"
-    for dir in */; do
-        if [ -d "$dir" ] && [[ "$dir" != ".git" ]] && [[ "$dir" != "README.md" ]]; then
+stow_dots() {
+    log_info "Stowing new dirs"
+
+    old_dirs=$(ls "$BACKUP_DIR")
+    new_dirs=$(ls "$HOME/dotfiles")
+
+    for dir in $new_dirs; do
+        if [[ ! " $old_dirs " =~ " $dir " ]]; then
+            log_info "Stowing new directory: $dir"
             stow -v -t ~ "$dir"
             log_success "Stowed $dir"
-        else
-            log_warning "Skipped $dir: Not a valid dotfile or excluded"
         fi
     done
-
-    log_success "Stowing is done"
 }
 
+reboot_ask() {
+    log_info "Do you want to reboot? Highly recommended. (y/n)"
+    read -r REBOOT_CONFIRM
+
+    if [[ "$REBOOT_CONFIRM" == "y" || "$REBOOT_CONFIRM" == "Y" ]]; then
+        log_info "Rebooting..."
+        sleep 1
+        sync
+        reboot
+    else
+       log_warning "Reboot skipped"
+    fi
+}
+
+# Run
+aur_helper
+backup
+update_repo
+update_aur
 update_dots
-
-#################
-## POST UPDATE ##
-#################
-
-log_info "Post update tasks"
-
-# Optionally, you can restart services or processes like wallpaper setting or daemon restart
-log_info "Restarting swww-daemon if it's running"
-if pgrep -x "swww-daemon" &>/dev/null; then
-    pkill swww-daemon
-    swww-daemon &
-    log_success "swww-daemon restarted"
-else
-    log_info "swww-daemon is not running"
-fi
-
-# Reapply wallpaper after update
-log_info "Reapplying wallpaper"
-swww img ~/wallpapers/polarlights3.jpg
-log_success "Wallpaper reapplied"
-
-log_success "Post update complete!"
-
-##########
-## END ##
-##########
-
-log_success "Update complete!"
-log_info "It is recommended to reboot your system to ensure all updates take effect."
-log_info "Do you want to reboot now? (y/n)"
-read -r REBOOT_CONFIRM
-
-if [[ "$REBOOT_CONFIRM" =~ ^[Yy]$ ]]; then
-    reboot
-else
-    log_info "Thanks for updating!"
-    exit 0
-fi
+stow_dots
+reboot_ask
