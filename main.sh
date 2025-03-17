@@ -52,6 +52,30 @@ clear # Clear the text
 ######################
 
 
+remove_packages() {
+
+    REMOVE_PACKAGES=(
+        "mako"
+        "pulseaudio"
+        "wallust-git"
+        "wlogout-git"
+    )
+
+    log_info "Removing unwanted/conficting packages..."
+
+    for pkg in "${REMOVE_PACKAGES[@]}"; do
+        if pacman -Qq "$pkg" &>/dev/null; then
+            log_info "Removing $pkg"
+            sudo pacman -Rnsc --noconfirm "$pkg"
+        else
+            log_info "$pkg not found, skipping.."
+        fi
+    done
+
+}
+
+remove_packages
+
 aur_helper_choose() {
     log_info "Which AUR helper do you want to use? If it is not installed then the script will install it. (yay/paru)?"
     read -r AUR_HELPER
@@ -156,7 +180,6 @@ install_packages() {
     )
 
     AUR_PACKAGES=(
-        "pokeget"
         "nwg-wrapper"
         "wlogout"
         "light"
