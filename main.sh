@@ -160,7 +160,6 @@ install_packages() {
         "nwg-wrapper"
         "wlogout"
         "light"
-        "waypaper"
         "wallust"
     )
 
