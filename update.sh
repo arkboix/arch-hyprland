@@ -107,13 +107,20 @@ stow_dots() {
     new_dirs=$(ls "$HOME/dotfiles")
 
     for dir in $new_dirs; do
-        if [[ ! " $old_dirs " =~ " $dir " ]]; then
+        # Skip .md files, LICENSE, and assets directory
+        if [[ "$dir" == *.md || "$dir" == "LICENSE" || "$dir" == "assets" ]]; then
+            log_info "Skipping $dir"
+            continue
+        fi
+
+        if [[ -d "$HOME/dotfiles/$dir" && ! " $old_dirs " =~ " $dir " ]]; then
             log_info "Stowing new directory: $dir"
             stow -v -t ~ "$dir"
             log_success "Stowed $dir"
         fi
     done
 }
+
 
 reboot_ask() {
     log_info "Do you want to reboot? Highly recommended. (y/n)"
