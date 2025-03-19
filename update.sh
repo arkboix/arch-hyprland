@@ -92,13 +92,23 @@ update_aur() {
 #################
 ## UPDATE DOTS ##
 #################
+
 update_dots() {
-    log_info "Resetting dotfiles repo"
-    cd "$HOME/dotfiles"
-    git reset --hard origin/main
-    git pull --force
-    log_success "Dotfiles Updated"
+    log_info "Updating dotfiles repo without resetting local changes"
+
+    cd "$HOME/dotfiles" || { log_error "Failed to access dotfiles directory"; exit 1; }
+
+    # Stash local changes, pull updates, then apply the stashed changes
+    git stash push -m "Local changes before pull" && log_info "Stashed local changes"
+
+    git pull --rebase origin main && log_success "Pulled latest changes with rebase"
+
+    # Apply stashed changes (if any)
+    git stash pop || log_info "No local changes to apply"
+
+    log_success "Dotfiles updated without losing local changes"
 }
+
 
 stow_dots() {
     log_info "Stowing new dirs"

@@ -326,7 +326,7 @@ clone() {
 
     if [[ "$WALLS_CONFIRM" =~ ^[Yy]$ ]]; then
         log_info "Cloning wallpapers repo, hope your computer doesn't run out of space!"
-         git clone --depth 1 https://github.com/arkboix/wallpapers.git "$HOME/wallpapers"
+         git clone --depth 1 https://gitlab.com/dwt1/wallpapers.git "$HOME/wallpapers-extra"
          log_success "Wallpapers installed"
     fi
 
