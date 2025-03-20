@@ -98,15 +98,18 @@ update_dots() {
 
     cd "$HOME/dotfiles" || { log_error "Failed to access dotfiles directory"; exit 1; }
 
-    # Stash local changes, pull updates, then apply the stashed changes
     git stash push -m "Local changes before pull" && log_info "Stashed local changes"
 
-    git pull --rebase origin main && log_success "Pulled latest changes with rebase"
-
-    # Apply stashed changes (if any)
-    git stash pop || log_info "No local changes to apply"
-
-    log_success "Dotfiles updated without losing local changes"
+    if git pull --rebase origin main; then
+        log_success "Pulled latest changes with rebase"
+        git stash pop || log_info "No local changes to apply"
+        log_success "Dotfiles updated without losing local changes"
+    else
+        log_error "Merge conflict detected! Fix manually."
+        git rebase --abort
+        git stash pop # Restore local changes safely
+        exit 1
+    fi
 }
 
 
