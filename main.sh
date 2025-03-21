@@ -55,7 +55,7 @@ clear # Clear the text
 remove_packages() {
 
     REMOVE_PACKAGES=(
-        "mako"
+        "swaync"
         "pulseaudio"
         "wallust-git"
         "wlogout-git"
@@ -153,6 +153,7 @@ install_packages() {
         "zsh"
         "nwg-menu"
         "bash"
+        "mako"
         "emacs"
         "hyprland"
         "hyprlock"
@@ -165,6 +166,7 @@ install_packages() {
         "swww"
         "yad"
         "ttf-font-awesome"
+        "ttf-montserrat"
         "ttf-iosevka-nerd"
         "ttf-jetbrains-mono"
         "ttf-jetbrains-mono-nerd"
@@ -259,6 +261,7 @@ backup() {
         "$HOME/.config/rofi"
         "$HOME/.config/nwg-dock-hyprland"
         "$HOME/.config/nwg-wrapper"
+        "$HOME/.local/share/fonts"
         "$HOME/.config/wofi"
         "$HOME/.config/wlogout"
         "$HOME/.config/starship"
@@ -367,6 +370,7 @@ stow_dots() {
         "starship"
         "wal"
         "wallust"
+        "fonts"
         "waybar"
         "wlogout"
         "wofi"
