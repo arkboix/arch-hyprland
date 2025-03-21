@@ -135,6 +135,10 @@ stow_dots() {
 }
 
 
+install_fonts() {
+    sudo pacman --needed --noconfirm ttf-montserrat
+}
+
 reboot_ask() {
     log_info "Do you want to reboot? Highly recommended. (y/n)"
     read -r REBOOT_CONFIRM
@@ -149,6 +153,8 @@ reboot_ask() {
     fi
 }
 
+
+
 # Run
 aur_helper
 backup
@@ -156,4 +162,5 @@ update_repo
 update_aur
 update_dots
 stow_dots
+install_fonts
 reboot_ask
